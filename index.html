@@ -260,7 +260,7 @@
 
         function publishText(content) {
             const textPost = createPostElement();
-            textPost.textContent = content;
+            textPost.textContent = `${activeUser.username} content`;
             document.querySelector(".admin-output").appendChild(textPost);
         }
 
@@ -277,7 +277,7 @@
             const docPost = createPostElement();
             const docLink = document.createElement("a");
             docLink.href = content;
-            docLink.textContent = <p>Username "Acaba de publicar" </p>;
+            docLink.textContent = `${activeUser.username} ha mandado un archivo`;
             docLink.target = "_blank";
             docPost.appendChild(docLink);
             document.querySelector(".admin-output").appendChild(docPost);
