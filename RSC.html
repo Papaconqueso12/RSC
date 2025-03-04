@@ -1,1 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSC</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .user-info {
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        nav {
+            background-color: #444;
+            overflow: hidden;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 20px;
+            display: inline-block;
+        }
+
+        nav ul li a:hover {
+            background-color: #555;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .admin-tools {
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .admin-output {
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .admin-output img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .admin-output audio {
+            width: 100%;
+        }
+
+        .post {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .post h4 {
+            margin: 0 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>RSC Roblox</h1>
+        <div class="user-info" id="userInfo"></div>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="RSC.html">Inicio</a></li>
+            <li><a href="pagina-bots.html">Bots</a></li>
+            <li><a href="pagina-redes.html">Redes Sociales</a></li>
+            <li><a href="pagina-proximamente.html">Próximamente</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>¡Bienvenido a RSC!</h2>
+        <p>Bienvenido a RSC, asegúrate de saber todo. ¿Podemos ayudarte aquí?</p>
+        <div class="admin-tools">
+            <h3>Herramientas para el Creador</h3>
+            <form id="adminForm">
+                <label for="postType">Tipo de Publicación:</label>
+                <select id="postType">
+                    <option value="texto">Texto</option>
+                    <option value="imagen">Imagen</option>
+                    <option value="documento">Documento</option>
+                    <option value="audio">Audio</option>
+                    <option value="encuesta">Encuesta</option>
+                </select>
+                <label for="content">Contenido (Texto, URL o Pregunta de Encuesta):</label>
+                <textarea id="content" placeholder="Escribe aquí tu contenido o URL"></textarea>
+                <button type="button" onclick="submitPost()">Publicar</button>
+            </form>
+        </div>
+        <div class="admin-output">
+            <h3>Publicaciones</h3>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 RSC. Sin Derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Verificar sesión activa
+        document.addEventListener("DOMContentLoaded", () => {
+            const activeUser = JSON.parse(localStorage.getItem("activeUser"));
+            if (!activeUser) {
+                // Si no hay usuario activo, redirigir al login
+                window.location.href = "login.html";
+            } else {
+                // Mostrar el nombre del usuario en la esquina superior derecha
+                const userInfo = document.getElementById("userInfo");
+                userInfo.textContent = `Usuario: ${activeUser.username}`;
+            }
+
+            // Cargar publicaciones guardadas
+            loadPosts();
+
+            // Mostrar herramientas si el usuario es administrador
+            if (isAdmin) {
+                document.querySelector(".admin-tools").style.display = "block";
+            }
+        });
+
+        const isAdmin = true; // Cambia a 'false' si el usuario no es administrador
+
+        function submitPost() {
+            const postType = document.getElementById("postType").value;
+            const content = document.getElementById("content").value.trim();
+
+            if (!content) {
+                alert("El contenido no puede estar vacío.");
+                return;
+            }
+
+            const newPost = { type: postType, content };
+
+            // Guardar publicación en localStorage
+            savePost(newPost);
+
+            // Mostrar publicación en la página
+            switch (postType) {
+                case "texto":
+                    publishText(content);
+                    break;
+                case "imagen":
+                    publishImage(content);
+                    break;
+                case "documento":
+                publishDocument(content);
+                    break;
+                case "audio":
+                    publishAudio(content);
+                    break;
+                case "encuesta":
+                    publishSurvey(content);
+                    break;
+                default:
+                    alert("Tipo de publicación no válido.");
+            }
+
+            // Limpiar formulario
+            document.getElementById("content").value = "";
+        }
+
+        function savePost(post) {
+            // Obtener publicaciones existentes
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+            // Agregar la nueva publicación
+            posts.push(post);
+            // Guardar publicaciones actualizadas
+            localStorage.setItem("posts", JSON.stringify(posts));
+        }
+
+        function loadPosts() {
+            const posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+            posts.forEach(post => {
+                switch (post.type) {
+                    case "texto":
+                        publishText(post.content);
+                        break;
+                    case "imagen":
+                        publishImage(post.content);
+                        break;
+                    case "documento":
+                        publishDocument(post.content);
+                        break;
+                    case "audio":
+                        publishAudio(post.content);
+                        break;
+                    case "encuesta":
+                        publishSurvey(post.content);
+                        break;
+                    default:
+                        console.error("Tipo de publicación desconocido:", post.type);
+                }
+            });
+        }
+
+        function publishText(content) {
+            const textPost = createPostElement();
+            textPost.textContent = content;
+            document.querySelector(".admin-output").appendChild(textPost);
+        }
+
+        function publishImage(content) {
+            const imagePost = createPostElement();
+            const img = document.createElement("img");
+            img.src = content;
+            img.alt = "Imagen publicada por el creador";
+            imagePost.appendChild(img);
+            document.querySelector(".admin-output").appendChild(imagePost);
+        }
+
+        function publishDocument(content) {
+            const docPost = createPostElement();
+            const docLink = document.createElement("a");
+            docLink.href = content;
+            docLink.textContent = "Documento publicado: Haz clic para descargar";
+            docLink.target = "_blank";
+            docPost.appendChild(docLink);
+            document.querySelector(".admin-output").appendChild(docPost);
+        }
+
+        function publishAudio(content) {
+            const audioPost = createPostElement();
+            const audio = document.createElement("audio");
+            audio.src = content;
+            audio.controls = true;
+            audioPost.appendChild(audio);
+            document.querySelector(".admin-output").appendChild(audioPost);
+        }
+
+        function publishSurvey(content) {
+            const surveyPost = createPostElement();
+            surveyPost.innerHTML = `<h4>Encuesta: ${content}</h4><p>Añade más lógica para manejar encuestas aquí.</p>`;
+            document.querySelector(".admin-output").appendChild(surveyPost);
+        }
+
+        function createPostElement() {
+            const post = document.createElement("div");
+            post.classList.add("post");
+            return post;
+        }
+    </script>
+</body>
+</html>
+
 
