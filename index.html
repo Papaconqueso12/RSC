@@ -117,6 +117,7 @@
 
         .post h4 {
             margin: 0 0 10px 0;
+            color: #333;
         }
     </style>
 </head>
@@ -161,28 +162,23 @@
     </footer>
 
     <script>
-        // Verificar sesión activa
         document.addEventListener("DOMContentLoaded", () => {
             const activeUser = JSON.parse(localStorage.getItem("activeUser"));
             if (!activeUser) {
-                // Si no hay usuario activo, redirigir al login
                 window.location.href = "login.html";
             } else {
-                // Mostrar el nombre del usuario en la esquina superior derecha
                 const userInfo = document.getElementById("userInfo");
-                userInfo.textContent = `Usuario: ${activeUser.username}`;
+                userInfo.textContent = `Usuario: @${activeUser.username}`;
             }
 
-            // Cargar publicaciones guardadas
             loadPosts();
 
-            // Mostrar herramientas si el usuario es administrador
             if (isAdmin) {
                 document.querySelector(".admin-tools").style.display = "block";
             }
         });
 
-        const isAdmin = true; // Cambia a 'false' si el usuario no es administrador
+        const isAdmin = true;
 
         function submitPost() {
             const postType = document.getElementById("postType").value;
@@ -193,118 +189,59 @@
                 return;
             }
 
-            const newPost = { type: postType, content };
+            const activeUser = JSON.parse(localStorage.getItem("activeUser"));
+            const newPost = { username: activeUser.username, type: postType, content };
 
-            // Guardar publicación en localStorage
             savePost(newPost);
+            displayPost(newPost);
 
-            // Mostrar publicación en la página
-            switch (postType) {
-                case "texto":
-                    publishText(content);
-                    break;
-                case "imagen":
-                    publishImage(content);
-                    break;
-                case "documento":
-                publishDocument(content);
-                    break;
-                case "audio":
-                    publishAudio(content);
-                    break;
-                case "encuesta":
-                    publishSurvey(content);
-                    break;
-                default:
-                    alert("Tipo de publicación no válido.");
-            }
-
-            // Limpiar formulario
             document.getElementById("content").value = "";
         }
 
         function savePost(post) {
-            // Obtener publicaciones existentes
             const posts = JSON.parse(localStorage.getItem("posts")) || [];
-            // Agregar la nueva publicación
             posts.push(post);
-            // Guardar publicaciones actualizadas
             localStorage.setItem("posts", JSON.stringify(posts));
         }
 
         function loadPosts() {
             const posts = JSON.parse(localStorage.getItem("posts")) || [];
-
-            posts.forEach(post => {
-                switch (post.type) {
-                    case "texto":
-                        publishText(post.content);
-                        break;
-                    case "imagen":
-                        publishImage(post.content);
-                        break;
-                    case "documento":
-                        publishDocument(post.content);
-                        break;
-                    case "audio":
-                        publishAudio(post.content);
-                        break;
-                    case "encuesta":
-                        publishSurvey(post.content);
-                        break;
-                    default:
-                        console.error("Tipo de publicación desconocido:", post.type);
-                }
-            });
+            posts.forEach(displayPost);
         }
 
-        function publishText(content) {
-            const textPost = createPostElement();
-            textPost.textContent = `${activeUser.username} content`;
-            document.querySelector(".admin-output").appendChild(textPost);
+        function displayPost(post) {
+            const postElement = createPostElement(post.username);
+            switch (post.type) {
+                case "texto":
+                    postElement.innerHTML += `<p>${post.content}</p>`;
+                    break;
+                case "imagen":
+                    postElement.innerHTML += `<img src="${post.content}" alt="Imagen publicada">`;
+                    break;
+                case "documento":
+                    postElement.innerHTML += `<a href="${post.content}" target="_blank">Ver documento</a>`;
+                    break;
+                case "audio":
+                    postElement.innerHTML += `<audio controls><source src="${post.content}" type="audio/mpeg"></audio>`;
+                    break;
+                case "encuesta":
+                    postElement.innerHTML += `<h4>Encuesta: ${post.content}</h4>`;
+                    break;
+                default:
+                    console.error("Tipo de publicación desconocido:", post.type);
+            }
+            document.querySelector(".admin-output").appendChild(postElement);
         }
 
-        function publishImage(content) {
-            const imagePost = createPostElement();
-            const img = document.createElement("img");
-            img.src = content;
-            img.alt = "Imagen publicada por el creador";
-            imagePost.appendChild(img);
-            document.querySelector(".admin-output").appendChild(imagePost);
-        }
-
-        function publishDocument(content) {
-            const docPost = createPostElement();
-            const docLink = document.createElement("a");
-            docLink.href = content;
-            docLink.textContent = `${activeUser.username} ha mandado un archivo`;
-            docLink.target = "_blank";
-            docPost.appendChild(docLink);
-            document.querySelector(".admin-output").appendChild(docPost);
-        }
-
-        function publishAudio(content) {
-            const audioPost = createPostElement();
-            const audio = document.createElement("audio");
-            audio.src = content;
-            audio.controls = true;
-            audioPost.appendChild(audio);
-            document.querySelector(".admin-output").appendChild(audioPost);
-        }
-
-        function publishSurvey(content) {
-            const surveyPost = createPostElement();
-            surveyPost.innerHTML = `<h4>Encuesta: ${content}</h4><p>Añade más lógica para manejar encuestas aquí.</p>`;
-            document.querySelector(".admin-output").appendChild(surveyPost);
-        }
-
-        function createPostElement() {
+        function createPostElement(username) {
             const post = document.createElement("div");
             post.classList.add("post");
+            post.innerHTML = `<h4>@${username}</h4>`;
             return post;
         }
     </script>
 </body>
 </html>
+
 
 
