@@ -137,7 +137,7 @@
         <h2>¡Bienvenido a RSC!</h2>
         <p>Bienvenido a RSC, asegúrate de saber todo. ¿Podemos ayudarte aquí?</p>
         <div class="admin-tools">
-            <h3>Herramientas para el Creador</h3>
+            <h3>Herramientas de Publicacion(BETA)</h3>
             <form id="adminForm">
                 <label for="postType">Tipo de Publicación:</label>
                 <select id="postType">
@@ -277,7 +277,7 @@
             const docPost = createPostElement();
             const docLink = document.createElement("a");
             docLink.href = content;
-            docLink.textContent = "Documento publicado: Haz clic para descargar";
+            docLink.textContent = <p>Username "Acaba de publicar" </p>;
             docLink.target = "_blank";
             docPost.appendChild(docLink);
             document.querySelector(".admin-output").appendChild(docPost);
