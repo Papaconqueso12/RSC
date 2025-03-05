@@ -11,7 +11,17 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
-            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         @keyframes fadeIn {
@@ -30,7 +40,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: fadeIn 0.8s ease-out;
+            animation: slideDown 0.8s ease-out;
         }
 
         .user-info {
@@ -40,34 +50,30 @@
 
         nav {
             background-color: #444;
-            text-align: center;
-            padding: 10px 0;
+            overflow: hidden;
+            animation: slideDown 0.8s ease-out;
         }
 
         nav ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
+            text-align: center;
         }
 
         nav ul li {
-            display: inline-block;
-            margin: 0 10px;
+            display: inline;
         }
 
         nav ul li a {
             text-decoration: none;
             color: #fff;
-            padding: 10px 15px;
-            border: 1px solid transparent;
-            border-radius: 5px;
-            transition: all 0.3s ease;
+            padding: 10px 20px;
+            display: inline-block;
         }
 
         nav ul li a:hover {
             background-color: #555;
-            color: #fff;
-            border-color: #fff;
         }
 
         .container {
@@ -76,6 +82,7 @@
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
             animation: fadeIn 1s ease-in;
         }
 
@@ -86,6 +93,7 @@
 
         .admin-output {
             margin-top: 20px;
+            animation: fadeIn 0.5s ease-in;
         }
 
         .post {
@@ -94,7 +102,7 @@
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 5px;
-            animation: fadeIn 0.5s ease-in;
+            animation: slideDown 0.5s ease-out;
         }
 
         .post h4 {
@@ -102,22 +110,11 @@
             color: #333;
         }
 
-        button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #555;
-        }
-
-        button:active {
-            transform: scale(0.95);
+        .post img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -135,18 +132,27 @@
         </ul>
     </nav>
     <div class="container">
-        <h2>¡Bienvenido a RSC!</h2>
-        <p>Bienvenido a RSC, comparte tus publicaciones con todos los usuarios.</p>
+        <h2>¡
+                    <h2>¡Bienvenido a RSC!</h2>
+        <p>Bienvenido a RSC, asegúrate de saber todo. ¿Podemos ayudarte aquí?</p>
         <div class="admin-tools">
             <h3>Herramientas de Publicación (BETA)</h3>
             <form id="adminForm">
-                <label for="content">Contenido:</label>
+                <label for="postType">Tipo de Publicación:</label>
+                <select id="postType">
+                    <option value="texto">Texto</option>
+                    <option value="imagen">Imagen</option>
+                    <option value="documento">Documento</option>
+                    <option value="audio">Audio</option>
+                    <option value="encuesta">Encuesta</option>
+                </select>
+                <label for="content">Contenido (Texto, URL o Pregunta de Encuesta):</label>
                 <textarea id="content" placeholder="Escribe aquí tu contenido o URL"></textarea>
                 <button type="button" onclick="submitPost()">Publicar</button>
             </form>
         </div>
         <div class="admin-output" id="postList">
-            <!-- Las publicaciones aparecerán aquí -->
+            <h3>Publicaciones</h3>
         </div>
     </div>
     <footer>
@@ -171,11 +177,6 @@
         const database = firebase.database();
 
         // Verificar inicio de sesión al cargar la página
-        document.addEventListener("DOMContentLoaded", () => {
-            const activeUser = JSON.parse(localStorage.getItem("activeUser"));
-            if (!activeUser) {
-                window.location.href = "login.html
-                            // Verificar inicio de sesión al cargar la página
         document.addEventListener("DOMContentLoaded", () => {
             const activeUser = JSON.parse(localStorage.getItem("activeUser"));
             if (!activeUser) {
@@ -204,6 +205,17 @@
                             <h4>@${post.username}</h4>
                             <p>${post.content}</p>
                         `;
+                        // Manejar diferentes tipos de publicaciones
+                        if (post.type === "imagen") {
+                            postElement.innerHTML += `<img src="${post.content}" alt="Imagen publicada">`;
+                        } else if (post.type === "documento") {
+                            postElement.innerHTML += `<a href="${post.content}" target="_blank">Ver documento</a>`;
+                        } else if (post.type === "audio") {
+                            postElement.innerHTML += `<audio controls><source src="${post.content}" type="audio/mpeg"></audio>`;
+                        } else if (post.type === "encuesta") {
+                            postElement.innerHTML += `<h4>Encuesta: ${post.content}</h4>`;
+                        }
+
                         postList.appendChild(postElement);
                     }
                 }
@@ -212,6 +224,7 @@
 
         // Guardar una nueva publicación
         function submitPost() {
+            const postType = document.getElementById("postType").value;
             const content = document.getElementById("content").value.trim();
             const activeUser = JSON.parse(localStorage.getItem("activeUser"));
 
@@ -222,6 +235,7 @@
 
             const newPost = {
                 username: activeUser.username,
+                type: postType,
                 content: content,
                 timestamp: Date.now()
             };
