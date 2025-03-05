@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
+            animation: fadeIn 1s ease-in;
         }
 
         @keyframes slideDown {
@@ -20,6 +21,15 @@
             }
             to {
                 transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
                 opacity: 1;
             }
         }
@@ -52,13 +62,14 @@
         }
 
         nav ul li {
-            display: inline;
+            display: inline-block;
         }
 
         nav ul li a {
             text-decoration: none;
             color: #fff;
             padding: 10px 20px;
+            display: inline-block;
         }
 
         nav ul li a:hover {
