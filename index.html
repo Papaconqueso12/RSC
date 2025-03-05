@@ -174,8 +174,15 @@
         document.addEventListener("DOMContentLoaded", () => {
             const activeUser = JSON.parse(localStorage.getItem("activeUser"));
             if (!activeUser) {
-                window.location.href = "login.html"; // Redirigir al login si no hay sesión
+                window.location.href = "login.html
+                            // Verificar inicio de sesión al cargar la página
+        document.addEventListener("DOMContentLoaded", () => {
+            const activeUser = JSON.parse(localStorage.getItem("activeUser"));
+            if (!activeUser) {
+                // Redirigir al login si no hay sesión activa
+                window.location.href = "login.html";
             } else {
+                // Mostrar el nombre del usuario en la esquina superior derecha
                 document.getElementById("userInfo").textContent = `Usuario: @${activeUser.username}`;
                 loadPosts(); // Cargar publicaciones al iniciar
             }
@@ -184,24 +191,26 @@
         // Cargar publicaciones desde Firebase
         function loadPosts() {
             const postList = document.getElementById("postList");
-            postList.innerHTML = ""; // Limpiar publicaciones
+            postList.innerHTML = ""; // Limpiar publicaciones existentes
 
             firebase.database().ref("posts").on("value", (snapshot) => {
                 const posts = snapshot.val();
-                for (const id in posts) {
-                    const post = posts[id];
-                    const postElement = document.createElement("div");
-                    postElement.classList.add("post");
-                    postElement.innerHTML = `
-                        <h4>@${post.username}</h4>
-                        <p>${post.content}</p>
-                    `;
-                    postList.appendChild(postElement);
+                if (posts) {
+                    for (const id in posts) {
+                        const post = posts[id];
+                        const postElement = document.createElement("div");
+                        postElement.classList.add("post");
+                        postElement.innerHTML = `
+                            <h4>@${post.username}</h4>
+                            <p>${post.content}</p>
+                        `;
+                        postList.appendChild(postElement);
+                    }
                 }
             });
         }
 
-        // Guardar nueva publicación
+        // Guardar una nueva publicación
         function submitPost() {
             const content = document.getElementById("content").value.trim();
             const activeUser = JSON.parse(localStorage.getItem("activeUser"));
@@ -217,8 +226,9 @@
                 timestamp: Date.now()
             };
 
+            // Guardar en Firebase
             firebase.database().ref("posts").push(newPost).then(() => {
-                document.getElementById("content").value = ""; // Limpiar campo
+                document.getElementById("content").value = ""; // Limpiar el campo de texto
                 alert("Publicación enviada con éxito.");
             }).catch(error => {
                 console.error("Error al enviar la publicación:", error);
