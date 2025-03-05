@@ -69,7 +69,6 @@
             text-decoration: none;
             color: #fff;
             padding: 10px 20px;
-            display: inline-block;
         }
 
         nav ul li a:hover {
@@ -92,7 +91,6 @@
 
         .admin-output {
             margin-top: 20px;
-            animation: fadeIn 0.5s ease-in;
         }
 
         .post {
@@ -101,6 +99,7 @@
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 5px;
+            animation: fadeIn 0.5s ease-in;
         }
 
         .post h4 {
@@ -142,7 +141,7 @@
             </form>
         </div>
         <div class="admin-output" id="postList">
-            <h3>Publicaciones</h3>
+            <!-- Las publicaciones aparecerán aquí -->
         </div>
     </div>
     <footer>
@@ -187,15 +186,18 @@
                 const posts = snapshot.val();
                 for (const id in posts) {
                     const post = posts[id];
-                    const postElement = document.createElement("div");
+                                        const postElement = document.createElement("div");
                     postElement.classList.add("post");
-                    postElement.innerHTML = `<h4>@${post.username}</h4><p>${post.content}</p>`;
+                    postElement.innerHTML = `
+                        <h4>@${post.username}</h4>
+                        <p>${post.content}</p>
+                    `;
                     postList.appendChild(postElement);
                 }
             });
         }
 
-        // Guardar nueva publicación
+        // Guardar una nueva publicación
         function submitPost() {
             const postType = document.getElementById("postType").value;
             const content = document.getElementById("content").value.trim();
@@ -209,16 +211,18 @@
             const newPost = {
                 username: activeUser.username,
                 type: postType,
-                content: content
+                content: content,
+                timestamp: Date.now()
             };
 
             firebase.database().ref("posts").push(newPost).then(() => {
-                document.getElementById("content").value = ""; // Limpiar campo
+                document.getElementById("content").value = ""; // Limpiar el campo de texto
                 alert("Publicación enviada con éxito.");
             }).catch(error => {
-                console.error("Error al enviar publicación:", error);
+                console.error("Error al enviar la publicación:", error);
             });
         }
     </script>
 </body>
 </html>
+
