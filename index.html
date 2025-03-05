@@ -13,17 +13,6 @@
             background-color: #f4f4f4;
         }
 
-        @keyframes slideDown {
-            from {
-                transform: translateY(-20%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -40,7 +29,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: slideDown 0.8s ease-out;
+            animation: fadeIn 0.8s ease-out;
         }
 
         .user-info {
@@ -50,30 +39,34 @@
 
         nav {
             background-color: #444;
-            overflow: hidden;
-            animation: slideDown 0.8s ease-out;
+            text-align: center;
+            padding: 10px 0;
         }
 
         nav ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
-            text-align: center;
         }
 
         nav ul li {
-            display: inline;
+            display: inline-block;
+            margin: 0 10px;
         }
 
         nav ul li a {
             text-decoration: none;
             color: #fff;
-            padding: 10px 20px;
-            display: inline-block;
+            padding: 10px 15px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
 
         nav ul li a:hover {
             background-color: #555;
+            color: #fff;
+            border-color: #fff;
         }
 
         .container {
@@ -82,7 +75,6 @@
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            position: relative;
             animation: fadeIn 1s ease-in;
         }
 
@@ -93,7 +85,6 @@
 
         .admin-output {
             margin-top: 20px;
-            animation: fadeIn 0.5s ease-in;
         }
 
         .post {
@@ -102,7 +93,7 @@
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 5px;
-            animation: slideDown 0.5s ease-out;
+            animation: fadeIn 0.5s ease-in;
         }
 
         .post h4 {
@@ -115,6 +106,32 @@
             height: auto;
             display: block;
             margin-top: 10px;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -132,9 +149,8 @@
         </ul>
     </nav>
     <div class="container">
-        <h2>¡
-                    <h2>¡Bienvenido a RSC!</h2>
-        <p>Bienvenido a RSC, asegúrate de saber todo. ¿Podemos ayudarte aquí?</p>
+        <h2>¡Bienvenido a RSC!</h2>
+        <p>Bienvenido a RSC, comparte tus publicaciones con todos los usuarios.</p>
         <div class="admin-tools">
             <h3>Herramientas de Publicación (BETA)</h3>
             <form id="adminForm">
@@ -152,7 +168,7 @@
             </form>
         </div>
         <div class="admin-output" id="postList">
-            <h3>Publicaciones</h3>
+            <!-- Las publicaciones aparecerán aquí -->
         </div>
     </div>
     <footer>
@@ -176,23 +192,19 @@
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Verificar inicio de sesión al cargar la página
         document.addEventListener("DOMContentLoaded", () => {
             const activeUser = JSON.parse(localStorage.getItem("activeUser"));
             if (!activeUser) {
-                // Redirigir al login si no hay sesión activa
                 window.location.href = "login.html";
             } else {
-                // Mostrar el nombre del usuario en la esquina superior derecha
                 document.getElementById("userInfo").textContent = `Usuario: @${activeUser.username}`;
-                loadPosts(); // Cargar publicaciones al iniciar
+                loadPosts();
             }
         });
 
-        // Cargar publicaciones desde Firebase
         function loadPosts() {
             const postList = document.getElementById("postList");
-            postList.innerHTML = ""; // Limpiar publicaciones existentes
+            postList.innerHTML = "";
 
             firebase.database().ref("posts").on("value", (snapshot) => {
                 const posts = snapshot.val();
@@ -201,28 +213,18 @@
                         const post = posts[id];
                         const postElement = document.createElement("div");
                         postElement.classList.add("post");
-                        postElement.innerHTML = `
-                            <h4>@${post.username}</h4>
-                            <p>${post.content}</p>
-                        `;
-                        // Manejar diferentes tipos de publicaciones
+                        postElement.innerHTML = `<h4>@${post.username}</h4>`;
                         if (post.type === "imagen") {
-                            postElement.innerHTML += `<img src="${post.content}" alt="Imagen publicada">`;
-                        } else if (post.type === "documento") {
-                            postElement.innerHTML += `<a href="${post.content}" target="_blank">Ver documento</a>`;
-                        } else if (post.type === "audio") {
-                            postElement.innerHTML += `<audio controls><source src="${post.content}" type="audio/mpeg"></audio>`;
-                        } else if (post.type === "encuesta") {
-                            postElement.innerHTML += `<h4>Encuesta: ${post.content}</h4>`;
+                            postElement.innerHTML += `<img src="${post.content}" alt="Imagen">`;
+                        } else {
+                            postElement.innerHTML += `<p>${post.content}</p>`;
                         }
-
                         postList.appendChild(postElement);
                     }
                 }
             });
         }
 
-        // Guardar una nueva publicación
         function submitPost() {
             const postType = document.getElementById("postType").value;
             const content = document.getElementById("content").value.trim();
@@ -240,14 +242,12 @@
                 timestamp: Date.now()
             };
 
-            // Guardar en Firebase
             firebase.database().ref("posts").push(newPost).then(() => {
-                document.getElementById("content").value = ""; // Limpiar el campo de texto
+                document.getElementById("content").value = "";
                 alert("Publicación enviada con éxito.");
-            }).catch(error => {
-                console.error("Error al enviar la publicación:", error);
-            });
+            }).catch(error => console.error(error));
         }
     </script>
 </body>
 </html>
+
