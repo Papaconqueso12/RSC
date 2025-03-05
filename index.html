@@ -14,17 +14,6 @@
             animation: fadeIn 1s ease-in;
         }
 
-        @keyframes slideDown {
-            from {
-                transform: translateY(-20%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -41,7 +30,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: slideDown 0.8s ease-out;
+            animation: fadeIn 0.8s ease-out;
         }
 
         .user-info {
@@ -51,28 +40,34 @@
 
         nav {
             background-color: #444;
-            animation: slideDown 0.8s ease-out;
+            text-align: center;
+            padding: 10px 0;
         }
 
         nav ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
-            text-align: center;
         }
 
         nav ul li {
             display: inline-block;
+            margin: 0 10px;
         }
 
         nav ul li a {
             text-decoration: none;
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px 15px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
 
         nav ul li a:hover {
             background-color: #555;
+            color: #fff;
+            border-color: #fff;
         }
 
         .container {
@@ -106,6 +101,24 @@
             margin: 0 0 10px 0;
             color: #333;
         }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -127,14 +140,6 @@
         <div class="admin-tools">
             <h3>Herramientas de Publicación (BETA)</h3>
             <form id="adminForm">
-                <label for="postType">Tipo de Publicación:</label>
-                <select id="postType">
-                    <option value="texto">Texto</option>
-                    <option value="imagen">Imagen</option>
-                    <option value="documento">Documento</option>
-                    <option value="audio">Audio</option>
-                    <option value="encuesta">Encuesta</option>
-                </select>
                 <label for="content">Contenido:</label>
                 <textarea id="content" placeholder="Escribe aquí tu contenido o URL"></textarea>
                 <button type="button" onclick="submitPost()">Publicar</button>
@@ -152,7 +157,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
     <script>
-        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA9DpUKYt1o2iZC8iT582KnDGxenDrQvQY",
             authDomain: "rscd-654c0.firebaseapp.com",
@@ -186,7 +190,7 @@
                 const posts = snapshot.val();
                 for (const id in posts) {
                     const post = posts[id];
-                                        const postElement = document.createElement("div");
+                    const postElement = document.createElement("div");
                     postElement.classList.add("post");
                     postElement.innerHTML = `
                         <h4>@${post.username}</h4>
@@ -197,9 +201,8 @@
             });
         }
 
-        // Guardar una nueva publicación
+        // Guardar nueva publicación
         function submitPost() {
-            const postType = document.getElementById("postType").value;
             const content = document.getElementById("content").value.trim();
             const activeUser = JSON.parse(localStorage.getItem("activeUser"));
 
@@ -210,13 +213,12 @@
 
             const newPost = {
                 username: activeUser.username,
-                type: postType,
                 content: content,
                 timestamp: Date.now()
             };
 
             firebase.database().ref("posts").push(newPost).then(() => {
-                document.getElementById("content").value = ""; // Limpiar el campo de texto
+                document.getElementById("content").value = ""; // Limpiar campo
                 alert("Publicación enviada con éxito.");
             }).catch(error => {
                 console.error("Error al enviar la publicación:", error);
@@ -225,4 +227,3 @@
     </script>
 </body>
 </html>
-
