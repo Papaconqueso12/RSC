@@ -52,14 +52,6 @@
             background-color: #555;
         }
 
-        .secondary-button {
-            background-color: #777;
-        }
-
-        .secondary-button:hover {
-            background-color: #999;
-        }
-
         p.error {
             color: red;
             font-size: 0.9em;
@@ -78,34 +70,52 @@
         <button class="secondary-button" onclick="redirectToSignUp()">Crear Cuenta</button>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA9DpUKYt1o2iZC8iT582KnDGxenDrQvQY",
+            authDomain: "rscd-654c0.firebaseapp.com",
+            databaseURL: "https://rscd-654c0-default-rtdb.firebaseio.com/",
+            projectId: "rscd-654c0",
+            storageBucket: "rscd-654c0.firebasestorage.app",
+            messagingSenderId: "504911995936",
+            appId: "1:504911995936:web:e8355b5b037efb86e88845"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         function validateLogin() {
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
             const errorMessage = document.getElementById("errorMessage");
 
-            // Obtener cuentas guardadas
-            const accounts = JSON.parse(localStorage.getItem("RSC_Pass")) || [];
+            firebase.database().ref("users").once("value").then(snapshot => {
+                const users = snapshot.val();
+                let userFound = false;
 
-            // Verificar credenciales
-            const validAccount = accounts.find(account => account.username === username && account.password === password);
+                for (const id in users) {
+                    if (users[id].username === username && users[id].password === password) {
+                        userFound = true;
+                        localStorage.setItem("activeUser", JSON.stringify({ username }));
+                        window.location.href = "index.html";
+                        break;
+                    }
+                }
 
-            if (validAccount) {
-                // Guardar sesión activa
-                localStorage.setItem("activeUser", JSON.stringify(validAccount));
-
-                // Redirigir a la página principal
-                window.location.href = "index.html";
-            } else {
-                // Mostrar mensaje de error
-                errorMessage.style.display = "block";
-            }
+                if (!userFound) {
+                    errorMessage.style.display = "block";
+                }
+            }).catch(error => {
+                console.error("Error al iniciar sesión:", error);
+            });
         }
 
         function redirectToSignUp() {
-            // Redirigir a la página de creación de cuenta
             window.location.href = "signup.html";
         }
     </script>
 </body>
 </html>
+
