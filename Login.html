@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Iniciar Sesión</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <style>
@@ -14,65 +14,61 @@
             text-align: center;
             padding: 50px;
         }
-        input {
+        input, button {
             margin: 10px;
             padding: 10px;
             width: 80%;
             max-width: 400px;
-            border: none;
-            border-radius: 4px;
-            background-color: rgb(63, 63, 63);
+            border-radius: 5px;
+        }
+        input {
+            background: rgb(63, 63, 63);
             color: aliceblue;
+            border: none;
         }
         button {
-            padding: 10px 20px;
-            margin: 10px;
-            background-color: #575757;
+            background-color: rgb(85, 85, 85);
             border: none;
-            border-radius: 4px;
             color: aliceblue;
             cursor: pointer;
-            font-size: 16px;
         }
         button:hover {
-            background-color: #777777;
+            background-color: rgb(95, 95, 95);
         }
         a {
             color: aliceblue;
             text-decoration: underline;
-            font-size: 14px;
-            display: block;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <h1>Iniciar Sesión</h1>
-    <input type="email" id="email" placeholder="Correo electrónico">
+    <input type="email" id="email" placeholder="Correo">
     <input type="password" id="password" placeholder="Contraseña">
     <button id="loginButton">Iniciar Sesión</button>
-    <a href="Signup.html">¿No tienes cuenta? Regístrate aquí</a>
-
+    <p>¿No tienes cuenta? <a href="Signup.html">Regístrate aquí</a></p>
     <script>
-        // Firebase Config
-        const firebaseConfig = { /* TU CONFIGURACIÓN */ };
-        const app = firebase.initializeApp(firebaseConfig);
+        // Configuración Firebase
+        const firebaseConfig = { 
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_AUTH_DOMAIN",
+            projectId: "TU_PROJECT_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
         // Inicio de sesión
         document.getElementById("loginButton").addEventListener("click", () => {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
-
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
-                    alert("Inicio de sesión exitoso");
-                    window.location.href = "Chat.html"; // Redirige al chat
+                    alert("Inicio de sesión exitoso.");
+                    window.location.href = "Chat.html";
                 })
-                .catch(error => {
-                    alert("Error: " + error.message);
-                });
+                .catch(error => alert("Error: " + error.message));
         });
     </script>
 </body>
 </html>
+
