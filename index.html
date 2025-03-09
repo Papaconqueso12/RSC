@@ -1,248 +1,104 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RSC</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            background-color: rgb(51, 51, 51);
+            color: aliceblue;
+            font-family: sans-serif;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .user-info {
-            color: #fff;
-            font-size: 1rem;
-        }
-
-        nav {
-            background-color: #444;
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        nav ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        nav ul li {
-            display: inline-block;
-            margin: 0 10px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: #fff;
-            padding: 10px 15px;
-            border: 1px solid transparent;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        nav ul li a:hover {
-            background-color: #555;
-            color: #fff;
-            border-color: #fff;
-        }
-
-        .container {
+        .sidebar {
             max-width: 1200px;
-            margin: 20px auto;
+            width: 200px;
+            height: 620px;
+            margin: auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: rgb(63, 63, 63);
+            box-shadow: 0 0 10px rgb(0, 0, 0);
+            position: fixed;
+            left: 0;
+            top: 0;
             animation: fadeIn 1s ease-in;
         }
 
-        .tools {
-            margin-top: 20px;
-        }
-
-        .output {
-            margin-top: 20px;
-        }
-
-        .post {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            animation: fadeIn 0.5s ease-in;
-        }
-
-        .post h4 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-
-        .post img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin-top: 10px;
-        }
-
-        button {
-            background-color: #333;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+        .sidebar button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 200px;
+            height: 60px;
+            background-color: rgb(85, 85, 85);
+            color: white; /* Cambiado para mejor contraste */
+            border: 1px solid #575757;
+            border-radius: 4px;
+            font-size: 18px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease-in-out;
         }
 
-        button:hover {
-            background-color: #555;
+        .sidebar button:hover {
+            background-color: #777777; 
+            border-color: #979797; 
         }
 
-        button:active {
-            transform: scale(0.95);
+        .sidebar button a {
+            text-decoration: none;
+            color: white; /* Asegura que el texto del enlace herede el color del botón */
+            font-size: 18px; /* Ajusta el texto */
         }
 
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        .NameBar {
+
+            background-color: #303030;
+            color: aliceblue;
+            max-width: 1200px;
+            width: 1200px;
+            height: 50px;
+            margin: auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgb(0, 0, 0);
+            position: fixed;
+            left: 245px;
+            top: -20px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+
         }
+
+        
     </style>
 </head>
 <body>
-    <header>
-        <h1>RSC Roblox</h1>
-        <div class="user-info" id="userInfo"></div>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="index.html">Inicio</a></li>
-            <li><a href="pagina-bots.html">Bots</a></li>
-            <li><a href="pagina-redes.html">Redes Sociales</a></li>
-            <li><a href="pagina-proximamente.html">Próximamente</a></li>
-        </ul>
-    </nav>
-    <div class="container">
-        <h2>¡Bienvenido a RSC!</h2>
-        <p>Bienvenido a RSC, comparte tus publicaciones con todos los usuarios.</p>
-        <div class="tools">
-            <h3>Publicar contenido</h3>
-            <form id="publishForm">
-                <label for="content">Escribe tu publicación:</label>
-                <textarea id="content" placeholder="Escribe aquí tu mensaje"></textarea>
-                <button type="button" onclick="submitPost()">Publicar</button>
-            </form>
-        </div>
-        <div class="output" id="postList">
-            <h3>Publicaciones</h3>
-            <!-- Las publicaciones aparecerán aquí -->
-        </div>
+    <div class="sidebar">
+        <h1>Opciones</h1>
+        <button>
+            <a href="index2.html">Inicio</a>
+        </button>
+
+        <button>
+            <a href="bot.html">Bots</a>
+        </button>
+
+        <button>
+            <a href="Redes.html">Redes Sociales</a>
+        </button>
+
+        <button>
+            <a href="Chat.html">Chat</a>
+        </button>
+
+        <option value="Tema">Tema</option>
     </div>
-    <footer>
-        <p>&copy; 2025 RSC. Sin Derechos reservados.</p>
-    </footer>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyA9DpUKYt1o2iZC8iT582KnDGxenDrQvQY",
-            authDomain: "rscd-654c0.firebaseapp.com",
-            databaseURL: "https://rscd-654c0-default-rtdb.firebaseio.com/",
-            projectId: "rscd-654c0",
-            storageBucket: "rscd-654c0.firebasestorage.app",
-            messagingSenderId: "504911995936",
-            appId: "1:504911995936:web:e8355b5b037efb86e88845"
-        };
+    <div class="NameBar">
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        <h1>RSC - Inicio</h1>
 
-        // Verificar inicio de sesión al cargar la página
-        document.addEventListener("DOMContentLoaded", () => {
-            const activeUser = JSON.parse(localStorage.getItem("activeUser"));
-            if (!activeUser) {
-                // Redirigir al login si no hay sesión activa
-                window.location.href = "login.html";
-            } else {
-                // Mostrar el nombre del usuario en la esquina superior derecha
-                document.getElementById("userInfo").textContent = `Usuario: @${activeUser.username}`;
-                loadPosts(); // Cargar publicaciones al iniciar
-            }
-        });
+    </div>
 
-        // Cargar publicaciones desde Firebase
-        function loadPosts() {
-            const postList = document.getElementById("postList");
-            postList.innerHTML = ""; // Limpiar publicaciones existentes
-
-            firebase.database().ref("posts").on("value", (snapshot) => {
-                const posts = snapshot.val();
-                if (posts) {
-                    for (const id in posts) {
-                        const post = posts[id];
-                        const postElement = document.createElement("div");
-                        postElement.classList.add("post");
-                        postElement.innerHTML = `
-                            <h4>@${post.username}</h4>
-                            <p>${post.content}</p>
-                        `;
-                        postList.appendChild(postElement);
-                    }
-                }
-            });
-        }
-
-        // Guardar nueva publicación
-        function submitPost() {
-            const content = document.getElementById("content").value.trim();
-            const activeUser = JSON.parse(localStorage.getItem("activeUser"));
-
-            if (!content) {
-                alert("El contenido no puede estar vacío.");
-                return;
-            }
-
-            const newPost = {
-                username: activeUser.username,
-                content: content,
-                timestamp: Date.now()
-            };
-
-            // Guardar en Firebase
-            firebase.database().ref("posts").push(newPost).then(() => {
-                document.getElementById("content").value = ""; // Limpiar el campo
-                alert("Publicación enviada con éxito.");
-            }).catch((error) => {
-                console.error("Error al enviar la publicación:", error);
-            });
-        }
-    </script>
 </body>
 </html>
+
