@@ -15,6 +15,8 @@
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         .sidebar {
@@ -24,8 +26,8 @@
             background-color: rgb(63, 63, 63);
             box-shadow: 0 0 10px rgb(0, 0, 0);
             position: fixed;
-            top: 0;
             left: 0;
+            top: 0;
         }
 
         .sidebar button {
@@ -82,11 +84,11 @@
 
         #chatContainer {
             width: calc(100% - 200px);
-            height: calc(100vh - 120px); /* Altura total menos NameBar y barra de escribir */
+            height: calc(100vh - 120px); /* Espacio disponible, excluyendo NameBar y footer */
             margin-top: 60px;
             margin-left: 200px;
             padding: 20px;
-            overflow-y: scroll;
+            overflow-y: auto;
             box-sizing: border-box;
         }
 
@@ -166,12 +168,13 @@
     </div>
 
     <script>
-        // Firebase Config
+        // Firebase Configuración
         const firebaseConfig = {
             apiKey: "AIzaSyA9DpUKYt1o2iZC8iT582KnDGxenDrQvQY",
             authDomain: "rscd-654c0.firebaseapp.com",
             databaseURL: "https://rscd-654c0-default-rtdb.firebaseio.com",
             projectId: "rscd-654c0",
+            storageBucket :"rscd-654c0.firebasestorage.app",
             messagingSenderId: "504911995936",
             appId: "1:504911995936:web:e8355b5b037efb86e88845"
         };
@@ -181,20 +184,20 @@
         const database = firebase.database();
         const auth = firebase.auth();
 
-        // Mostrar nombre del usuario
+        // Verificar autenticación
         auth.onAuthStateChanged(user => {
             const userInfo = document.getElementById("userInfo");
             if (user) {
                 userInfo.innerText = `Usuario: ${user.email}`;
             } else {
-                window.location.href = "Login.html";
+                window.location.href = "Login.html"; // Redirigir si no está autenticado
             }
         });
 
         // Referencia al chat
         const chatRef = database.ref("chat");
 
-        // Mostrar mensajes
+        // Mostrar mensajes en tiempo real
         chatRef.on("child_added", data => {
             const chatContainer = document.getElementById("chatContainer");
             const message = data.val();
@@ -203,7 +206,7 @@
                     <strong>${message.user}:</strong> ${message.text}
                 </div>`;
             chatContainer.innerHTML += messageElement;
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
         });
 
         // Enviar mensaje
@@ -213,8 +216,8 @@
             const user = auth.currentUser ? auth.currentUser.email : "Invitado";
 
             if (text) {
-                chatRef.push({ user, text });
-                messageInput.value = "";
+                chatRef.push({ user, text }); // Guardar mensaje en Realtime Database
+                messageInput.value = ""; // Limpiar campo de texto
             }
         });
     </script>
