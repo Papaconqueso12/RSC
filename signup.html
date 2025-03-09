@@ -64,7 +64,7 @@
             auth.createUserWithEmailAndPassword(email, password)
                 .then(() => {
                     alert("Cuenta creada. Inicia sesión.");
-                    window.location.href = "Login.html";
+                    window.location.href = "login.html";
                 })
                 .catch(error => alert("Error: " + error.message));
         });
