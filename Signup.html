@@ -14,64 +14,59 @@
             text-align: center;
             padding: 50px;
         }
-        input {
+        input, button {
             margin: 10px;
             padding: 10px;
             width: 80%;
             max-width: 400px;
-            border: none;
-            border-radius: 4px;
-            background-color: rgb(63, 63, 63);
+            border-radius: 5px;
+        }
+        input {
+            background: rgb(63, 63, 63);
             color: aliceblue;
+            border: none;
         }
         button {
-            padding: 10px 20px;
-            margin: 10px;
-            background-color: #575757;
+            background-color: rgb(85, 85, 85);
             border: none;
-            border-radius: 4px;
             color: aliceblue;
             cursor: pointer;
-            font-size: 16px;
         }
         button:hover {
-            background-color: #777777;
+            background-color: rgb(95, 95, 95);
         }
         a {
             color: aliceblue;
             text-decoration: underline;
-            font-size: 14px;
-            display: block;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <h1>Registro</h1>
-    <input type="email" id="email" placeholder="Correo electrónico">
+    <input type="email" id="email" placeholder="Correo">
     <input type="password" id="password" placeholder="Contraseña">
-    <button id="signupButton">Registrar</button>
-    <a href="Login.html">¿Ya tienes cuenta? Inicia sesión aquí</a>
-
+    <button id="signupButton">Crear cuenta</button>
+    <p>¿Ya tienes una cuenta? <a href="Login.html">Inicia sesión aquí</a></p>
     <script>
-        // Firebase Config
-        const firebaseConfig = { /* TU CONFIGURACIÓN */ };
-        const app = firebase.initializeApp(firebaseConfig);
+        // Configuración Firebase
+        const firebaseConfig = { 
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_AUTH_DOMAIN",
+            projectId: "TU_PROJECT_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // Registro de cuenta
+        // Registro de usuario
         document.getElementById("signupButton").addEventListener("click", () => {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
-
             auth.createUserWithEmailAndPassword(email, password)
                 .then(() => {
-                    alert("Cuenta creada exitosamente");
-                    window.location.href = "Login.html"; // Redirige al login
+                    alert("Cuenta creada. Inicia sesión.");
+                    window.location.href = "Login.html";
                 })
-                .catch(error => {
-                    alert("Error: " + error.message);
-                });
+                .catch(error => alert("Error: " + error.message));
         });
     </script>
 </body>
